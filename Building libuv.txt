@@ -1,0 +1,76 @@
+I will testing the Project on Windows 11 Home, 12th Gen Intel(R) Core(TM) i7 - 12000H, 16GB RAM, NVMe Micron 2450 - 512GB SSD, NVIDIA GeForce 3050 Ti Laptop GPU with 4GB VRAM.
+
+
+Step 1 - Install Chrome
+Go to https://www.google.com/chrome/dr/download/?brand=CHBD&ds_kid=43700075934933066&gad_source=1&gclid=Cj0KCQiAwOe8BhCCARIsAGKeD54MqdtvsN3LpEYaROVSCoMk0WDSPgf6RRV1NEf9Gvy-ZiFxnE-oSj4aAqnQEALw_wcB&gclsrc=aw.ds
+Download Chrome Setup v134.0.6947.0
+
+Step 2 - Install NodeJS
+Go to https://nodejs.org/en/download
+Download the NodeJS v22.12.1(LTS)
+Install the node-v22.13.1-x64.msi to C:\Program Files\nodejs
+
+Step 3 - Download LibUV for making code changes
+Go to the provide git repository link provided below
+https://github.com/libuv/libuv/tree/v1.x - Dated 1/29/2025
+Download the libuv-1.x.zip into a folder and extract the files
+Open the libuv folder in Visual Studio Code
+
+Step 4 - Install CMake
+Go to https://cmake.org/download/
+Download cmake-3.31.5-windows-x86_64.msi to C:\Program Files\CMake
+
+Step 5 - Restart the computer once you have completed Step 1 to Step 4
+
+Step 6 - Use the commands below in the same directory to:
+Generate Build Files:
+mkdir build
+cd build
+cmake ..
+
+Build the Project:
+cmake --build . --config Release
+
+Install the Library:
+cmake --install . --prefix "C:\path\to\install"
+             OR 
+cmake --install . --config Release
+
+This will install the libuv-custom to C:\usr\local\libuv-custom
+
+Set up environment variables Go to Environment Variables/System Variables & then to the Path add the C:\usr\local\libuv-custom\bin & hit OK on all windows
+
+Write a test file
+mkdir custom-test
+cd custom-test
+// test.c
+#include <stdio.h>
+#include <uv.h>
+
+int main() {
+    printf("libuv version: %s\n", uv_version_string());
+    return 0;
+}
+
+After saving the file, run the below command in 
+cl test.c /I"C:\usr\local\libuv-custom\include" /link "C:\usr\local\libuv-custom\lib\uv.lib"
+
+Step 7:
+After Testing, In order to use the libuv-custom library in NodeJS
+Firstly, Take Backup of the existing NodeJS library with the following commands:
+mkdir C:\NodeJS_Backup
+xcopy "C:\Program Files\nodejs\*.*" "C:\NodeJS_Backup\" /E /H /C /I
+
+Check current NodeJS & Lin UV Version
+node -v
+node -p "process.versions.uv"
+
+Replace libuv-custom files
+copy "C:\usr\local\libuv-custom\bin\uv.dll" "C:\Program Files\nodejs\" /Y
+
+Replace original files:
+xcopy "C:\NodeJS_Backup\*.*" "C:\Program Files\nodejs\" /E /H /C /I /Y
+
+
+ 
+
